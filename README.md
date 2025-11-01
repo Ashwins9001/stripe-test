@@ -9,3 +9,14 @@ Project uses following technologies
 - Stripe payments API
 - Flask
 - HTML/Jinja2
+
+# Project Setup #
+1. Open cmd line tab to root directory, install Stripe CLI
+2. In same cmd line tab run: stripe login
+3. In same cmd line tab run: stripe listen --forward-to localhost:5000/webhook
+4. Fetch the returned webhook secret and replace the local STRIPE_WEBHOOK_SECRET environment variable with it
+5. Open another cmd line tab to root directory, run docker-compose --build
+6. Goto localhost:5000
+7. Execute payment, to do dummy transaction pass any details and a valid future expiration date
+
+Need to manually provide webhook secret since it's run locally, normally Stripe will provide a webhook secret for a publically available endpoint, but this project is all locally-run. 
