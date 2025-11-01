@@ -7,5 +7,4 @@ services:
       - "5000:5000"
     env_file:
       - .env   # Load env vars from .env file
-    volumes:
-      - .:/app  # Optional: mount local code for live editing
+   

@@ -15,13 +15,14 @@ def create_app():
     app = Flask(__name__)
 
     # Database configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///products.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///data/products.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize database
     db.init_app(app)
 
     # Stripe configuration
+    endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
     stripe.api_key = os.getenv("STRIPE_SECRET_KEY")  # Server-side only (secret key)
 
     # Register blueprint(s)
