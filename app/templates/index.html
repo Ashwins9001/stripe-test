@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Store</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center; }
+    button { background: #6772e5; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Store</h1>
+  <div class="grid">
+    {% for p in products %}
+    <div class="card">
+      <h3>{{ p.name }}</h3>
+      <p>Inventory: {{ p.inventory }}</p>
+      <p>Price: ${{ "%.2f"|format(p.price / 100) }}</p>
+      <button onclick="checkout({{ p.id }})">Buy</button>
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Initialize Stripe using publishable key passed from Flask
+    const stripe = Stripe("{{ stripe_publishable_key }}");
+
+    async function checkout(product_id) {
+      const res = await fetch("/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id }),
+      });
+      const session = await res.json();
+
+      // Redirect to Stripe Checkout
+      const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+      if (error) {
+        console.error("Stripe checkout error:", error.message);
+      }
+    }
+  </script>
+</body>
+</html>
